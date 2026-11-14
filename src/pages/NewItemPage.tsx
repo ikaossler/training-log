@@ -7,31 +7,43 @@ function NewItemPage() {
   const [subtitle, setSubtitle] = useState('')
   const [category, setCategory] = useState('')
   const [status, setStatus] = useState('')
-  const [rating, setRating] = useState(0)
+  const [rating, setRating] = useState(1)
   const [notes, setNotes] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+  const [error, setError] = useState('')
 
   const navigate = useNavigate()
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
+    setIsSaving(true)
+    setError('')
 
-    const response = await fetch(`${API_URL}/items`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, subtitle, category, status, rating, notes }),
-    })
-    const data = await response.json()
+    try {
+      const response = await fetch(`${API_URL}/items`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, subtitle, category, status, rating, notes }),
+      })
+      const data = await response.json()
 
-    if (!response.ok) {
-    console.log(data.message)
-    return
+      if (!response.ok) {
+        throw new Error(data.message)
+      }
+
+      navigate(`/items/${data.id}`)
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Something went wrong')
+    } finally {
+      setIsSaving(false)
     }
-
-    navigate(`/items/${data.id}`)
   }
 
   return (
     <form onSubmit={handleSubmit}>
+      {isSaving && <p>Saving...</p>}
+      {error && <p>{error}</p>}
+
       <label>
         Title
         <input value={title} onChange={(event) => setTitle(event.target.value)} />
