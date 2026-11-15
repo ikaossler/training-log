@@ -31,3 +31,7 @@ Then open the address shown in the terminal, usually http://localhost:5173.
 - React, TypeScript and Vite
 - React Router for navigating between pages
 - Shelf API for data (GET, POST, PATCH and DELETE)
+
+## Grade goal
+
+I am aiming for a **G**.
